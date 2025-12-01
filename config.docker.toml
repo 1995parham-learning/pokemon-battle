@@ -1,0 +1,16 @@
+# Pokemon Battle Configuration for Docker
+
+[database]
+url = "postgresql+asyncpg://pokemon:pokemon@db:5432/pokemon_battle"
+
+[pokeapi]
+base_url = "https://pokeapi.co/api/v2"
+timeout = 30.0
+
+[cache]
+pokemon_ttl = 3600
+
+[api]
+title = "Pokemon Battle API"
+version = "1.0.0"
+debug = false
