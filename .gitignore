@@ -50,9 +50,6 @@ dmypy.json
 # Configuration (use config.toml.example as template)
 config.toml
 
-# uv
-uv.lock
-
 # OS
 .DS_Store
 Thumbs.db
