@@ -23,23 +23,27 @@ A Pokemon battle simulator that fetches data from PokeAPI and determines battle 
 ### Local Development
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd pokemon-battle
 ```
 
 2. Install dependencies with uv:
+
 ```bash
 uv sync --dev
 ```
 
 3. Set up configuration (uses Python 3.14's `tomllib`):
+
 ```bash
 cp config.toml.example config.toml
 # Edit config.toml with your settings
 ```
 
 4. Start PostgreSQL (or use Docker):
+
 ```bash
 docker run -d \
   --name pokemon-db \
@@ -51,6 +55,7 @@ docker run -d \
 ```
 
 5. Run the application:
+
 ```bash
 uv run uvicorn pokemon_battle.main:app --reload
 ```
@@ -66,34 +71,42 @@ The API will be available at `http://localhost:8000`.
 ## API Documentation
 
 Once running, visit:
+
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
 
 ### Endpoints
 
 #### Health Check
+
 ```
 GET /api/v1/health
 ```
+
 Returns the API health status.
 
 #### Pokemon
 
 **Get Pokemon by name:**
+
 ```
 GET /api/v1/pokemon/{name}
 ```
+
 Fetches Pokemon data. If not in database, retrieves from PokeAPI and caches locally.
 
 **List all Pokemon:**
+
 ```
 GET /api/v1/pokemon?limit=100&offset=0
 ```
+
 Lists all Pokemon stored in the database.
 
 #### Battles
 
 **Start a battle:**
+
 ```
 POST /api/v1/battles
 Content-Type: application/json
@@ -105,6 +118,7 @@ Content-Type: application/json
 ```
 
 Response:
+
 ```json
 {
   "id": 1,
@@ -119,11 +133,13 @@ Response:
 ```
 
 **Get battle by ID:**
+
 ```
 GET /api/v1/battles/{id}
 ```
 
 **List all battles:**
+
 ```
 GET /api/v1/battles?limit=100&offset=0
 ```
@@ -135,6 +151,7 @@ The battle algorithm determines the winner based on a comprehensive scoring syst
 ### 1. Base Stats Power (50% weight)
 
 Calculates a power score from Pokemon stats:
+
 - **Offensive Power**: `(Attack + Special Attack) / 2`
 - **Defensive Power**: `(Defense + Special Defense) / 2`
 - **Base Power**: `(HP × 0.5 + Offensive + Defensive + Speed) / 4`
@@ -142,6 +159,7 @@ Calculates a power score from Pokemon stats:
 ### 2. Type Effectiveness (30% weight)
 
 Uses the official Pokemon type chart to calculate advantages:
+
 - **Super Effective (2x)**: Fire → Grass, Water → Fire, etc.
 - **Not Very Effective (0.5x)**: Fire → Water, Electric → Ground, etc.
 - **Immune (0x)**: Normal → Ghost, Ground → Flying, etc.
@@ -152,6 +170,7 @@ Type bonus = `type_effectiveness × base_power × 0.3`
 ### 3. Speed Advantage (20% weight)
 
 Faster Pokemon get a bonus (they would attack first in real battles):
+
 - Speed ratio = `attacker_speed / defender_speed`
 - Speed bonus = `min(speed_ratio, 2.0) × base_power × 0.2`
 
@@ -167,6 +186,7 @@ Score = (base_power × 0.5) + type_bonus + speed_bonus
 ### Rationale
 
 This algorithm balances:
+
 1. **Raw power** - Stronger Pokemon generally win
 2. **Type matchups** - Strategic advantage matters (like in real Pokemon)
 3. **Speed** - Being faster provides an edge
@@ -182,6 +202,7 @@ uv run pytest
 ```
 
 With coverage:
+
 ```bash
 uv run pytest --cov=src/pokemon_battle --cov-report=html
 ```
@@ -189,16 +210,19 @@ uv run pytest --cov=src/pokemon_battle --cov-report=html
 ### Code Quality
 
 **Linting with ruff:**
+
 ```bash
 uv run ruff check src/ tests/
 ```
 
 **Format code:**
+
 ```bash
 uv run ruff format src/ tests/
 ```
 
 **Type checking with mypy:**
+
 ```bash
 uv run mypy src/
 ```
@@ -234,33 +258,35 @@ pokemon-battle/
 ## Database Schema
 
 ### Pokemon Table
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| pokeapi_id | INTEGER | PokeAPI identifier |
-| name | VARCHAR(100) | Pokemon name |
-| hp | INTEGER | Hit points |
-| attack | INTEGER | Attack stat |
-| defense | INTEGER | Defense stat |
-| special_attack | INTEGER | Special attack stat |
-| special_defense | INTEGER | Special defense stat |
-| speed | INTEGER | Speed stat |
-| types | VARCHAR(100) | Comma-separated types |
-| sprite_url | VARCHAR(500) | Sprite image URL |
-| created_at | TIMESTAMP | Record creation time |
-| updated_at | TIMESTAMP | Last update time |
+
+| Column          | Type         | Description           |
+| --------------- | ------------ | --------------------- |
+| id              | INTEGER      | Primary key           |
+| pokeapi_id      | INTEGER      | PokeAPI identifier    |
+| name            | VARCHAR(100) | Pokemon name          |
+| hp              | INTEGER      | Hit points            |
+| attack          | INTEGER      | Attack stat           |
+| defense         | INTEGER      | Defense stat          |
+| special_attack  | INTEGER      | Special attack stat   |
+| special_defense | INTEGER      | Special defense stat  |
+| speed           | INTEGER      | Speed stat            |
+| types           | VARCHAR(100) | Comma-separated types |
+| sprite_url      | VARCHAR(500) | Sprite image URL      |
+| created_at      | TIMESTAMP    | Record creation time  |
+| updated_at      | TIMESTAMP    | Last update time      |
 
 ### Battles Table
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| pokemon1_id | INTEGER | First Pokemon (FK) |
-| pokemon2_id | INTEGER | Second Pokemon (FK) |
-| winner_id | INTEGER | Winner Pokemon (FK, nullable for draws) |
-| pokemon1_score | FLOAT | First Pokemon's battle score |
-| pokemon2_score | FLOAT | Second Pokemon's battle score |
-| battle_log | TEXT | Detailed battle log |
-| created_at | TIMESTAMP | Battle timestamp |
+
+| Column         | Type      | Description                             |
+| -------------- | --------- | --------------------------------------- |
+| id             | INTEGER   | Primary key                             |
+| pokemon1_id    | INTEGER   | First Pokemon (FK)                      |
+| pokemon2_id    | INTEGER   | Second Pokemon (FK)                     |
+| winner_id      | INTEGER   | Winner Pokemon (FK, nullable for draws) |
+| pokemon1_score | FLOAT     | First Pokemon's battle score            |
+| pokemon2_score | FLOAT     | Second Pokemon's battle score           |
+| battle_log     | TEXT      | Detailed battle log                     |
+| created_at     | TIMESTAMP | Battle timestamp                        |
 
 ## Configuration
 
@@ -289,6 +315,7 @@ If `config.toml` is not present, sensible defaults are used.
 ## Caching
 
 The application implements an in-memory cache for Pokemon data fetched from PokeAPI:
+
 - Default TTL: 1 hour (configurable via `cache.pokemon_ttl` in config.toml)
 - Reduces API calls to PokeAPI
 - Improves response times for repeated requests
@@ -296,6 +323,7 @@ The application implements an in-memory cache for Pokemon data fetched from Poke
 ## Error Handling
 
 The API returns appropriate HTTP status codes:
+
 - `200`: Success
 - `201`: Resource created (battles)
 - `400`: Bad request (e.g., same Pokemon battling)
