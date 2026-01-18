@@ -11,13 +11,6 @@ A Pokemon battle simulator that fetches data from PokeAPI and determines battle 
 - PostgreSQL persistence for Pokemon and battle records
 - Fully containerized with Docker Compose
 
-## Requirements
-
-- Python 3.14+
-- PostgreSQL 16+
-- Docker and Docker Compose (for containerized deployment)
-- [uv](https://docs.astral.sh/uv/) package manager
-
 ## Installation
 
 ### Local Development
