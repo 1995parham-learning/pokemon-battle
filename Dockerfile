@@ -25,4 +25,4 @@ COPY src/ ./src/
 EXPOSE 8000
 
 # Run the application
-CMD ["uv", "run", "uvicorn", "pokemon_battle.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "src.pokemon_battle.main:app", "--host", "0.0.0.0", "--port", "8000"]
