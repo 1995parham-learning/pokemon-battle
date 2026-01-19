@@ -1,6 +1,5 @@
 """Tests for the battle algorithm."""
 
-
 from pokemon_battle.battle import (
     calculate_base_power,
     execute_battle,

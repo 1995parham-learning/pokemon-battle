@@ -288,21 +288,25 @@ def execute_battle(pokemon1: Pokemon, pokemon2: Pokemon) -> BattleResult:
 
     # Pokemon 1 stats
     p1_sp = f"  SP.ATK: {pokemon1.special_attack} | SP.DEF: {pokemon1.special_defense}"
-    log_lines.extend([
-        f"{pokemon1.name.upper()} ({', '.join(p1_types)})",
-        f"  HP: {pokemon1.hp} | ATK: {pokemon1.attack} | DEF: {pokemon1.defense}",
-        f"{p1_sp} | SPD: {pokemon1.speed}",
-        "",
-    ])
+    log_lines.extend(
+        [
+            f"{pokemon1.name.upper()} ({', '.join(p1_types)})",
+            f"  HP: {pokemon1.hp} | ATK: {pokemon1.attack} | DEF: {pokemon1.defense}",
+            f"{p1_sp} | SPD: {pokemon1.speed}",
+            "",
+        ]
+    )
 
     # Pokemon 2 stats
     p2_sp = f"  SP.ATK: {pokemon2.special_attack} | SP.DEF: {pokemon2.special_defense}"
-    log_lines.extend([
-        f"{pokemon2.name.upper()} ({', '.join(p2_types)})",
-        f"  HP: {pokemon2.hp} | ATK: {pokemon2.attack} | DEF: {pokemon2.defense}",
-        f"{p2_sp} | SPD: {pokemon2.speed}",
-        "",
-    ])
+    log_lines.extend(
+        [
+            f"{pokemon2.name.upper()} ({', '.join(p2_types)})",
+            f"  HP: {pokemon2.hp} | ATK: {pokemon2.attack} | DEF: {pokemon2.defense}",
+            f"{p2_sp} | SPD: {pokemon2.speed}",
+            "",
+        ]
+    )
 
     # Calculate scores
     log_lines.append(f"--- {pokemon1.name.upper()}'s Attack ---")

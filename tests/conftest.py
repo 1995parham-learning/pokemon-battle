@@ -183,11 +183,13 @@ def mock_pokeapi_client(
     mock_blastoise_data: dict[str, Any],
 ) -> MockPokeAPIClient:
     """Create a mock PokeAPI client."""
-    return MockPokeAPIClient({
-        "pikachu": mock_pikachu_data,
-        "charizard": mock_charizard_data,
-        "blastoise": mock_blastoise_data,
-    })
+    return MockPokeAPIClient(
+        {
+            "pikachu": mock_pikachu_data,
+            "charizard": mock_charizard_data,
+            "blastoise": mock_blastoise_data,
+        }
+    )
 
 
 @pytest.fixture
