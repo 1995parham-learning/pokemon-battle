@@ -4,19 +4,18 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from pokemon_battle.battle import execute_battle
 from pokemon_battle.exceptions import SamePokemonError
 from pokemon_battle.models import Battle, Pokemon
-from pokemon_battle.pokeapi import PokeAPIClient
+from pokemon_battle.protocols import BattleEngine, PokemonProvider
 from pokemon_battle.schemas import PokemonCreate
 
 
 class PokemonService:
     """Service for Pokemon-related operations."""
 
-    def __init__(self, db: AsyncSession, pokeapi_client: PokeAPIClient) -> None:
+    def __init__(self, db: AsyncSession, pokemon_provider: PokemonProvider) -> None:
         self.db = db
-        self.pokeapi_client = pokeapi_client
+        self.pokemon_provider = pokemon_provider
 
     async def get_or_fetch_pokemon(self, name: str) -> Pokemon:
         """
@@ -42,8 +41,8 @@ class PokemonService:
         if pokemon is not None:
             return pokemon
 
-        # Fetch from PokeAPI
-        pokemon_data = await self.pokeapi_client.get_pokemon(name_lower)
+        # Fetch from provider
+        pokemon_data = await self.pokemon_provider.get_pokemon(name_lower)
 
         # Create and save to database
         pokemon = await self._create_pokemon(pokemon_data)
@@ -83,9 +82,15 @@ class PokemonService:
 class BattleService:
     """Service for battle-related operations."""
 
-    def __init__(self, db: AsyncSession, pokemon_service: PokemonService) -> None:
+    def __init__(
+        self,
+        db: AsyncSession,
+        pokemon_service: PokemonService,
+        battle_engine: BattleEngine,
+    ) -> None:
         self.db = db
         self.pokemon_service = pokemon_service
+        self.battle_engine = battle_engine
 
     async def execute_battle(self, pokemon1_name: str, pokemon2_name: str) -> Battle:
         """
@@ -114,8 +119,8 @@ class BattleService:
         pokemon1 = await self.pokemon_service.get_or_fetch_pokemon(name1)
         pokemon2 = await self.pokemon_service.get_or_fetch_pokemon(name2)
 
-        # Execute battle
-        result = execute_battle(pokemon1, pokemon2)
+        # Execute battle using the engine
+        result = self.battle_engine.execute(pokemon1, pokemon2)
 
         # Save battle record
         battle = Battle(

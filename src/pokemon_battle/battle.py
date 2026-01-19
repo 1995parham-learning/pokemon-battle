@@ -345,3 +345,22 @@ def execute_battle(pokemon1: Pokemon, pokemon2: Pokemon) -> BattleResult:
         battle_log="\n".join(log_lines),
         is_draw=is_draw,
     )
+
+
+class DefaultBattleEngine:
+    """Default battle engine using stats-based scoring.
+
+    This engine implements the BattleEngine protocol and uses:
+    - Base stats power (50% weight)
+    - Type effectiveness (30% weight)
+    - Speed advantage (20% weight)
+    """
+
+    def execute(self, pokemon1: Pokemon, pokemon2: Pokemon) -> BattleResult:
+        """Execute a battle between two Pokemon."""
+        return execute_battle(pokemon1, pokemon2)
+
+
+def get_battle_engine() -> DefaultBattleEngine:
+    """Get the default battle engine instance."""
+    return DefaultBattleEngine()

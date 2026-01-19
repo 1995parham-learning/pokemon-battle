@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from pokemon_battle import __version__
+from pokemon_battle.battle import get_battle_engine
 from pokemon_battle.database import get_db
 from pokemon_battle.exceptions import (
     PokeAPIError,
@@ -13,7 +14,8 @@ from pokemon_battle.exceptions import (
     PokemonNotFoundError,
     SamePokemonError,
 )
-from pokemon_battle.pokeapi import PokeAPIClient, get_pokeapi_client
+from pokemon_battle.pokeapi import get_pokeapi_client
+from pokemon_battle.protocols import BattleEngine, PokemonProvider
 from pokemon_battle.schemas import (
     BattleListResponse,
     BattleRequest,
@@ -30,18 +32,19 @@ router = APIRouter()
 # Dependencies
 def get_pokemon_service(
     db: Annotated[AsyncSession, Depends(get_db)],
-    pokeapi: Annotated[PokeAPIClient, Depends(get_pokeapi_client)],
+    pokemon_provider: Annotated[PokemonProvider, Depends(get_pokeapi_client)],
 ) -> PokemonService:
     """Dependency for PokemonService."""
-    return PokemonService(db, pokeapi)
+    return PokemonService(db, pokemon_provider)
 
 
 def get_battle_service(
     db: Annotated[AsyncSession, Depends(get_db)],
     pokemon_service: Annotated[PokemonService, Depends(get_pokemon_service)],
+    battle_engine: Annotated[BattleEngine, Depends(get_battle_engine)],
 ) -> BattleService:
     """Dependency for BattleService."""
-    return BattleService(db, pokemon_service)
+    return BattleService(db, pokemon_service, battle_engine)
 
 
 # Exception handlers helper
