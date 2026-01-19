@@ -1,0 +1,51 @@
+### Pokemon Battle API
+
+@baseUrl = http://127.0.0.1:8000
+
+### Root - API information
+
+GET {{baseUrl}}/ HTTP/1.1
+
+### Health check
+
+GET {{baseUrl}}/api/v1/health HTTP/1.1
+
+### Get Pokemon by name
+
+GET {{baseUrl}}/api/v1/pokemon/pikachu HTTP/1.1
+
+### Get another Pokemon
+
+GET {{baseUrl}}/api/v1/pokemon/charizard HTTP/1.1
+
+### List all Pokemon (with pagination)
+
+GET {{baseUrl}}/api/v1/pokemon?limit=10&offset=0 HTTP/1.1
+
+### Start a battle between two Pokemon
+
+POST {{baseUrl}}/api/v1/battles HTTP/1.1
+Content-Type: application/json
+
+{
+  "pokemon1_name": "pikachu",
+  "pokemon2_name": "charizard"
+}
+
+### Start another battle
+
+POST {{baseUrl}}/api/v1/battles HTTP/1.1
+Content-Type: application/json
+
+{
+  "pokemon1_name": "bulbasaur",
+  "pokemon2_name": "squirtle"
+}
+
+### Get battle by ID
+
+GET {{baseUrl}}/api/v1/battles/1 HTTP/1.1
+
+### List all battles (with pagination)
+
+GET {{baseUrl}}/api/v1/battles?limit=10&offset=0 HTTP/1.1
