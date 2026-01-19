@@ -4,7 +4,7 @@ on: push
 
 jobs:
   lint:
-    name: Python format and liting
+    name: Format and Liting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
