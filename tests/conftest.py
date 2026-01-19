@@ -42,6 +42,17 @@ async def db_session() -> AsyncGenerator[AsyncSession]:
         await conn.run_sync(Base.metadata.drop_all)
 
 
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
+    """Clean up the async engine after all tests complete."""
+    import asyncio
+
+    loop = asyncio.new_event_loop()
+    try:
+        loop.run_until_complete(test_engine.dispose())
+    finally:
+        loop.close()
+
+
 @pytest.fixture
 def test_cache() -> PokemonCache:
     """Create a test cache instance."""
